@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULEAM Cloud Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div class="container mx-auto p-8">
+        <header class="mb-12 border-b border-blue-500 pb-4">
+            <h1 class="text-4xl font-bold text-blue-400">Azure Task Manager</h1>
+            <p class="text-gray-400">IT Engineering Project - ULEAM</p>
+        </header>
+
+        <!-- Formulario -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl mb-8">
+            <h2 class="text-xl mb-4 font-semibold">Nueva Tarea</h2>
+            <div class="flex gap-4">
+                <input id="title" type="text" placeholder="Título" class="flex-1 p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500">
+                <input id="desc" type="text" placeholder="Descripción" class="flex-1 p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500">
+                <button onclick="createTask()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded font-bold transition">Agregar</button>
+            </div>
+        </div>
+
+        <!-- Lista de Tareas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tasks-container">
+            <!-- Las tareas se cargan aquí -->
+        </div>
+    </div>
+
+    <script>
+        // Cambia http por https
+        const API_URL = "https://uleam-webapp.azurewebsites.net";  
+
+        async function fetchTasks() {
+            const res = await fetch(`${API_URL}/tasks`);
+            const tasks = await res.json();
+            const container = document.getElementById('tasks-container');
+            container.innerHTML = '';
+            tasks.forEach(task => {
+                container.innerHTML += `
+                    <div class="bg-gray-800 p-5 rounded-lg border-l-4 border-blue-500">
+                        <h3 class="font-bold text-xl">${task.title}</h3>
+                        <p class="text-gray-400 mb-4">${task.description || 'Sin descripción'}</p>
+                        <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 text-sm">Eliminar</button>
+                    </div>
+                `;
+            });
+        }
+
+        async function createTask() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('desc').value;
+            await fetch(`${API_URL}/tasks`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, description })
+            });
+            document.getElementById('title').value = '';
+            document.getElementById('desc').value = '';
+            fetchTasks();
+        }
+
+        async function deleteTask(id) {
+            await fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' });
+            fetchTasks();
+        }
+
+        // Carga inicial
+        fetchTasks();
+    </script>
+</body>
+</html>
