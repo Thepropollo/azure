@@ -27,9 +27,40 @@ Montar una aplicación CRUD sencilla con:
 ## Arquitectura final
 
 - Backend/API: [https://uleam-webapp.azurewebsites.net](https://uleam-webapp.azurewebsites.net)
-- Frontend: [https://red-glacier-03b319e10.7.azurestaticapps.net](https://red-glacier-03b319e10.7.azurestaticapps.net)
+- Frontend: [https://lemon-coast-022ba9e10.7.azurestaticapps.net](https://lemon-coast-022ba9e10.7.azurestaticapps.net)
 
 El frontend consume la API pública usando la URL del backend.
+
+## Para compartir con otros compañeros
+
+Este proyecto ya está preparado para que cualquiera lo pueda abrir y repetir sin tocar la configuración interna:
+
+- La API local arranca con SQLite usando `USE_SQLITE=1`.
+- El backend se puede desplegar con `azure-deploy.sh`.
+- El frontend se puede desplegar con `deploy-frontend.sh`.
+- En Windows se usa `startup.ps1` para iniciar la API local.
+
+Si alguien solo quiere probarlo en remoto, puede usar directamente estas URLs:
+
+- Backend/API: [https://uleam-webapp.azurewebsites.net](https://uleam-webapp.azurewebsites.net)
+- Frontend: [https://lemon-coast-022ba9e10.7.azurestaticapps.net](https://lemon-coast-022ba9e10.7.azurestaticapps.net)
+
+## Scripts automáticos
+
+Los scripts del repositorio dejan el flujo preparado para reutilizarse:
+
+- `startup.sh`: arranca la API en Linux/macOS.
+- `startup.ps1`: arranca la API en Windows PowerShell.
+- `azure-deploy.sh`: crea o reutiliza recursos de Azure y publica el backend.
+- `deploy-frontend.sh`: obtiene el token de Static Web Apps y publica `frontend/`.
+
+Ejemplos rápidos:
+
+```bash
+USE_SQLITE=1 PORT=8000 ./startup.sh
+./azure-deploy.sh practica-estudiante uleamacr-estudiante uleam-webapp-estudiante centralus
+bash ./deploy-frontend.sh practica-estudiante uleamfrontpractica frontend
+```
 
 ## Ejecución local del backend
 
@@ -101,7 +132,13 @@ El frontend ya fue publicado en Azure Static Web Apps con la carpeta `frontend/`
 URL:
 
 ```text
-https://red-glacier-03b319e10.7.azurestaticapps.net
+https://lemon-coast-022ba9e10.7.azurestaticapps.net
+```
+
+Si necesitas volver a publicarlo, usa:
+
+```bash
+bash ./deploy-frontend.sh practica-estudiante uleamfrontpractica frontend
 ```
 
 ## Windows (PowerShell) - pasos rápidos
