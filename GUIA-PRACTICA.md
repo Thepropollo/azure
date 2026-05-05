@@ -104,6 +104,54 @@ URL:
 https://red-glacier-03b319e10.7.azurestaticapps.net
 ```
 
+## Windows (PowerShell) - pasos rápidos
+
+1. Abrir PowerShell y crear un entorno virtual (opcional pero recomendado):
+
+```powershell
+cd C:\ruta\al\proyecto\azure
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+2. Ejecutar la API local (usar SQLite para pruebas):
+
+```powershell
+$env:USE_SQLITE = "1"
+$env:PORT = "8000"
+./startup.ps1
+```
+
+3. Construir y probar con Docker (requiere Docker Desktop):
+
+```powershell
+docker build -t uleam-api:latest .
+docker run --rm -p 8000:8000 -e USE_SQLITE=1 --name uleam-api uleam-api:latest
+```
+
+4. Servir frontend localmente (PowerShell):
+
+```powershell
+cd frontend
+python -m http.server 8080
+# Abrir http://localhost:8080
+```
+
+5. Desplegar frontend a Static Web Apps usando token (ya hay un script/manual en la guía):
+
+```powershell
+# Obtener token
+$token = az staticwebapp secrets list -n uleam-front -g my-rg --query properties.apiKey -o tsv
+npx --yes @azure/static-web-apps-cli deploy frontend --deployment-token $token --env production
+```
+
+Notas para Windows:
+- Usa `Activate.ps1` para activar el entorno virtual en PowerShell.
+- Si PowerShell bloquea la ejecución de scripts, ejecuta como administrador:
+	`Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+
 ## Qué aprendió esta práctica
 
 - Cómo separar frontend y backend
